@@ -60,16 +60,17 @@ export default function Register({ onRegister, onSwitchToLogin }) {
     <div className="login-container">
       <form onSubmit={handleSubmit}>
         <div className="login-header">
-          <div className="login-logo">📝</div>
+          <div className="login-logo" aria-hidden="true">📝</div>
           <h2>Create Account</h2>
           <p className="login-subtitle">Join AIMS - Attendance & Quiz System</p>
         </div>
 
-        {error && <div className="login-error">{error}</div>}
+        {error && <div className="login-error" role="alert">{error}</div>}
 
         <div className="input-group">
-          <label>Full Name</label>
+          <label htmlFor="register-name">Full Name</label>
           <input
+            id="register-name"
             type="text"
             placeholder="Enter your full name"
             value={name}
@@ -80,8 +81,8 @@ export default function Register({ onRegister, onSwitchToLogin }) {
         </div>
 
         <div className="input-group">
-          <label>Role</label>
-          <select value={role} onChange={(e) => setRole(e.target.value)}>
+          <label htmlFor="register-role">Role</label>
+          <select id="register-role" value={role} onChange={(e) => setRole(e.target.value)}>
             <option value="student">Student</option>
             <option value="teacher">Teacher</option>
           </select>
@@ -89,8 +90,9 @@ export default function Register({ onRegister, onSwitchToLogin }) {
 
         {role === "teacher" && (
           <div className="input-group fade-in">
-            <label>Teacher Registration Code</label>
+            <label htmlFor="register-teacher-code">Teacher Registration Code</label>
             <input
+              id="register-teacher-code"
               type="text"
               placeholder="Enter the teacher code (if required)"
               value={teacherCode}
@@ -103,8 +105,9 @@ export default function Register({ onRegister, onSwitchToLogin }) {
         )}
 
         <div className="input-group">
-          <label>Email</label>
+          <label htmlFor="register-email">Email</label>
           <input
+            id="register-email"
             type="email"
             placeholder="Enter your email"
             value={email}
@@ -115,15 +118,18 @@ export default function Register({ onRegister, onSwitchToLogin }) {
         </div>
 
         <div className="input-group">
-          <label>Password</label>
+          <label htmlFor="register-password">Password</label>
           <div className="password-wrapper">
             <input
+              id="register-password"
               type={showPassword ? "text" : "password"}
               placeholder="At least 8 chars, letters & numbers"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"
               required
+              aria-invalid={password.length > 0 && passwordIssues.length > 0}
+              aria-describedby={passwordIssues.length > 0 ? "register-password-hints" : undefined}
             />
             <button
               type="button"
@@ -135,7 +141,7 @@ export default function Register({ onRegister, onSwitchToLogin }) {
             </button>
           </div>
           {password.length > 0 && passwordIssues.length > 0 && (
-            <div className="password-hints">
+            <div id="register-password-hints" className="password-hints" aria-live="polite">
               {passwordIssues.map((issue) => (
                 <span key={issue} className="password-hint-item">
                   ⚠️ {issue}
@@ -146,9 +152,10 @@ export default function Register({ onRegister, onSwitchToLogin }) {
         </div>
 
         <div className="input-group">
-          <label>Confirm Password</label>
+          <label htmlFor="register-confirm-password">Confirm Password</label>
           <div className="password-wrapper">
             <input
+              id="register-confirm-password"
               type={showPassword ? "text" : "password"}
               placeholder="Re-enter your password"
               value={confirmPassword}
@@ -159,15 +166,20 @@ export default function Register({ onRegister, onSwitchToLogin }) {
           </div>
         </div>
 
-        <button type="submit" className="login-btn" disabled={loading}>
-          {loading ? <span className="spinner"></span> : "Register"}
+        <button type="submit" className="login-btn" disabled={loading} aria-busy={loading}>
+          {loading ? (
+            <>
+              <span className="spinner" aria-hidden="true"></span>
+              <span>Creating account...</span>
+            </>
+          ) : "Register"}
         </button>
 
         <p className="switch-text">
           Already have an account?{" "}
-          <span className="link" onClick={onSwitchToLogin}>
+          <button type="button" className="link" onClick={onSwitchToLogin}>
             Login here
-          </span>
+          </button>
         </p>
       </form>
     </div>

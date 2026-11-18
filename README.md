@@ -4,7 +4,7 @@ See [frontend/README.md](./frontend/README.md) for features, local setup, API en
 
 ## Production Deployment
 
-Deploy the API and web frontend as separate services, and use a managed MongoDB database.
+Use a managed MongoDB database. Deploy the frontend and API together on one Render Web Service or separately using a static frontend host and a Node.js API host.
 
 ### One Render Web Service (Frontend + Backend)
 
@@ -59,3 +59,11 @@ node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 3. Deploy the backend and confirm `https://<your-public-api-host>/health` returns HTTP 200 with `"status":"ok"`.
 4. Connect this repository to Netlify, set `REACT_APP_API_URL` to the deployed API URL, and deploy. Confirm registration, login, and core workflows on the deployed site.
 5. Review dependency audit findings and upgrade vulnerable dependencies before handling real user data.
+
+## Tests
+
+Run all backend validation and frontend component tests from the repository root:
+
+```bash
+npm test
+```

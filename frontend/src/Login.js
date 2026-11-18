@@ -33,24 +33,25 @@ export default function Login({ onLogin, onSwitchToRegister }) {
     <div className="login-container">
       <form onSubmit={handleSubmit}>
         <div className="login-header">
-          <div className="login-logo">📚</div>
+          <div className="login-logo" aria-hidden="true">📚</div>
           <h2>{role === "teacher" ? "Teacher Login" : "Student Login"}</h2>
           <p className="login-subtitle">AIMS - Attendance & Quiz System</p>
         </div>
 
-        {error && <div className="login-error">{error}</div>}
+        {error && <div className="login-error" role="alert">{error}</div>}
 
         <div className="input-group">
-          <label>Role</label>
-          <select value={role} onChange={(e) => setRole(e.target.value)}>
+          <label htmlFor="login-role">Role</label>
+          <select id="login-role" value={role} onChange={(e) => setRole(e.target.value)}>
             <option value="student">Student</option>
             <option value="teacher">Teacher</option>
           </select>
         </div>
 
         <div className="input-group">
-          <label>Email</label>
+          <label htmlFor="login-email">Email</label>
           <input
+            id="login-email"
             type="email"
             placeholder="Enter your email"
             value={email}
@@ -61,9 +62,10 @@ export default function Login({ onLogin, onSwitchToRegister }) {
         </div>
 
         <div className="input-group">
-          <label>Password</label>
+          <label htmlFor="login-password">Password</label>
           <div className="password-wrapper">
             <input
+              id="login-password"
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
               value={password}
@@ -82,15 +84,20 @@ export default function Login({ onLogin, onSwitchToRegister }) {
           </div>
         </div>
 
-        <button type="submit" className="login-btn" disabled={loading}>
-          {loading ? <span className="spinner"></span> : "Login"}
+        <button type="submit" className="login-btn" disabled={loading} aria-busy={loading}>
+          {loading ? (
+            <>
+              <span className="spinner" aria-hidden="true"></span>
+              <span>Logging in...</span>
+            </>
+          ) : "Login"}
         </button>
 
         <p className="switch-text">
           Don't have an account?{" "}
-          <span className="link" onClick={onSwitchToRegister}>
+          <button type="button" className="link" onClick={onSwitchToRegister}>
             Register here
-          </span>
+          </button>
         </p>
       </form>
     </div>

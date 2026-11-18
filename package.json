@@ -4,7 +4,8 @@
   },
   "scripts": {
     "build": "npm --prefix backend ci && npm --prefix frontend ci && npm --prefix frontend run build",
-    "start": "npm --prefix backend start"
+    "start": "npm --prefix backend start",
+    "test": "npm --prefix backend test && npm --prefix frontend test -- --watchAll=false"
   },
   "dependencies": {
     "dotenv": "^17.4.2",
