@@ -33,19 +33,18 @@ Generate a JWT secret with:
 node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 ```
 
-### Frontend
+### Frontend on Netlify
 
-- Service root: `frontend`
-- Install/build command: `npm ci && npm run build`
-- Static publish directory: `build`
-- Build environment: `REACT_APP_API_URL=https://<your-public-api-host>`
+- The root [`netlify.toml`](./netlify.toml) sets the base directory to `frontend`, builds with `npm ci && npm run build`, and publishes `build`.
+- In Netlify, connect this Git repository and set `REACT_APP_API_URL` to the backend's public HTTPS URL under **Site configuration → Environment variables**. Trigger a new deploy after setting it.
+- The frontend is a static site; host the API separately on a Node.js host.
 
 `REACT_APP_*` values are embedded in public browser code; do not put secrets in them. Configure the backend's `CLIENT_ORIGIN` to include the deployed frontend origin. For Android builds, use the HTTPS API URL as `REACT_APP_API_URL` before running Capacitor sync/build.
 
 ### Before Launch
 
 1. Configure the managed database's network access for the backend host.
-2. Set all required backend variables in the hosting provider; production startup fails fast if required values are missing or invalid.
+2. Set all required backend variables in the API host; production startup fails fast if required values are missing or invalid.
 3. Deploy the backend and confirm `https://<your-public-api-host>/health` returns HTTP 200 with `"status":"ok"`.
-4. Build/deploy the frontend with its public API URL, then test registration, login, and core workflows on the deployed site.
+4. Connect this repository to Netlify, set `REACT_APP_API_URL` to the deployed API URL, and deploy. Confirm registration, login, and core workflows on the deployed site.
 5. Review dependency audit findings and upgrade vulnerable dependencies before handling real user data.
