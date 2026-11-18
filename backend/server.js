@@ -25,10 +25,11 @@ if (process.env.NODE_ENV === "production") {
   if (!process.env.MONGO_URI || !process.env.MONGO_URI.trim()) {
     missingConfig.push("MONGO_URI");
   }
-  if (
-    !process.env.CLIENT_ORIGIN ||
-    !process.env.CLIENT_ORIGIN.split(",").some((origin) => origin.trim())
-  ) {
+  const configuredClientOrigins = (process.env.CLIENT_ORIGIN || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+  if (!configuredClientOrigins.length && !process.env.RENDER_EXTERNAL_URL) {
     missingConfig.push("CLIENT_ORIGIN");
   }
   if (
@@ -53,14 +54,22 @@ app.disable("x-powered-by");
 // HTTP security headers
 app.use(helmet());
 
-// CORS - restricted to configured origins
-// Defaults include web dev and Capacitor Android origins
-const allowedOrigins = (
-  process.env.CLIENT_ORIGIN ||
-  "http://localhost:3000,http://localhost:5000,capacitor://localhost,https://localhost"
-)
-  .split(",")
-  .map((o) => o.trim())
+// CORS - restrict production to configured frontend origins and this Render service.
+const developmentOrigins =
+  process.env.NODE_ENV === "production"
+    ? []
+    : [
+        "http://localhost:3000",
+        "http://localhost:5000",
+        "capacitor://localhost",
+        "https://localhost",
+      ];
+const allowedOrigins = [
+  ...(process.env.CLIENT_ORIGIN || "").split(","),
+  process.env.RENDER_EXTERNAL_URL || "",
+  ...developmentOrigins,
+]
+  .map((o) => o.trim().replace(/\/+$/, ""))
   .filter(Boolean);
 
 app.use(

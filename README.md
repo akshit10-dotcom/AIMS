@@ -15,7 +15,7 @@ The backend serves the production React build, so Render can run both from the r
 - Start Command: `npm start`
 - Health Check Path: `/health`
 
-Set the backend environment variables listed below in Render. For `CLIENT_ORIGIN`, use the service's public URL. The frontend uses same-origin API requests in production unless `REACT_APP_API_URL` is explicitly set.
+Set the backend environment variables listed below in Render. Render's `RENDER_EXTERNAL_URL` is automatically allowed as the same-origin frontend; set `CLIENT_ORIGIN` only if you also host the frontend on a different domain. The frontend uses same-origin API requests in production unless `REACT_APP_API_URL` is explicitly set.
 
 ### Backend API
 
@@ -32,7 +32,7 @@ Configure these environment variables in the backend host:
 | `NODE_ENV` | Yes | `production` |
 | `MONGO_URI` | Yes | Managed MongoDB connection string |
 | `JWT_SECRET` | Yes | Unique random secret, at least 32 characters |
-| `CLIENT_ORIGIN` | Yes | Frontend origin(s), comma-separated, no trailing slash |
+| `CLIENT_ORIGIN` | When frontend is separate | Frontend origin(s), comma-separated, no trailing slash; Render's own URL is auto-allowed |
 | `TEACHER_REGISTRATION_CODE` | Yes | Strong, private code for teacher registration |
 | `JWT_EXPIRES_IN` | No | Token lifetime; defaults to `24h` |
 | `GEMINI_API_KEY` | No | Backend-only key for AI quiz generation |
