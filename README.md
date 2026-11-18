@@ -6,6 +6,17 @@ See [frontend/README.md](./frontend/README.md) for features, local setup, API en
 
 Deploy the API and web frontend as separate services, and use a managed MongoDB database.
 
+### One Render Web Service (Frontend + Backend)
+
+The backend serves the production React build, so Render can run both from the repository root in one Web Service:
+
+- Root Directory: leave blank
+- Build Command: `npm run build`
+- Start Command: `npm start`
+- Health Check Path: `/health`
+
+Set the backend environment variables listed below in Render. For `CLIENT_ORIGIN`, use the service's public URL. The frontend uses same-origin API requests in production unless `REACT_APP_API_URL` is explicitly set.
+
 ### Backend API
 
 - Service root: `backend`

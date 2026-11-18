@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const path = require("path");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
@@ -124,6 +125,10 @@ app.use("/auth", authRoutes);
 app.use("/attendance", attendanceRoutes);
 app.use("/quiz", quizRoutes);
 app.use("/lecture", lectureRoutes);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "..", "frontend", "build")));
+}
 
 // Health check
 app.get("/", (req, res) => {
