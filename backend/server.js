@@ -16,10 +16,31 @@ const app = express();
 
 // ============ SECURITY ============
 
-// Fail fast in production if critical secrets are missing
-if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
-  console.error("FATAL: JWT_SECRET must be set in production.");
-  process.exit(1);
+if (process.env.NODE_ENV === "production") {
+  const missingConfig = [];
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET.trim().length < 32) {
+    missingConfig.push("JWT_SECRET (at least 32 characters)");
+  }
+  if (!process.env.MONGO_URI || !process.env.MONGO_URI.trim()) {
+    missingConfig.push("MONGO_URI");
+  }
+  if (
+    !process.env.CLIENT_ORIGIN ||
+    !process.env.CLIENT_ORIGIN.split(",").some((origin) => origin.trim())
+  ) {
+    missingConfig.push("CLIENT_ORIGIN");
+  }
+  if (
+    !process.env.TEACHER_REGISTRATION_CODE ||
+    !process.env.TEACHER_REGISTRATION_CODE.trim()
+  ) {
+    missingConfig.push("TEACHER_REGISTRATION_CODE");
+  }
+
+  if (missingConfig.length) {
+    console.error(`FATAL: Set valid production environment variables: ${missingConfig.join(", ")}.`);
+    process.exit(1);
+  }
 }
 
 // Trust proxy - required when behind a reverse proxy (e.g. nginx, Render, Heroku)
@@ -107,6 +128,14 @@ app.use("/lecture", lectureRoutes);
 // Health check
 app.get("/", (req, res) => {
   res.json({ message: "AIMS API is running", status: "ok", uptime: process.uptime() });
+});
+
+app.get("/health", (req, res) => {
+  const databaseReady = mongoose.connection.readyState === 1;
+  res.status(databaseReady ? 200 : 503).json({
+    status: databaseReady ? "ok" : "unavailable",
+    database: databaseReady ? "connected" : "disconnected",
+  });
 });
 
 // ============ ERROR HANDLING ============
